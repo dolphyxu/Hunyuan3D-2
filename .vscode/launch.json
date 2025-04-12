@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "image23d",
+            "type": "python",
+            "env": {
+                "PYTHONPATH":"${workspaceRoot}"
+            },
+            "request": "launch",
+            "program": "/home/xhyh/project/llm/Hunyuan3D-2/gradio_app.py",
+            "args": ["--enable_t23d"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        }
+    ]
+}

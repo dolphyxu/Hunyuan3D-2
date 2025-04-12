@@ -67,10 +67,12 @@ class Hunyuan3DPaintPipeline:
                     import huggingface_hub
                     # download from huggingface
                     model_path = huggingface_hub.snapshot_download(
-                        repo_id=original_model_path, allow_patterns=["hunyuan3d-delight-v2-0/*"]
+                        repo_id=original_model_path, allow_patterns=["hunyuan3d-delight-v2-0/*"],
+                        local_files_only=True  # Use only local files, don't try to download
                     )
                     model_path = huggingface_hub.snapshot_download(
-                        repo_id=original_model_path, allow_patterns=[f'{subfolder}/*']
+                        repo_id=original_model_path, allow_patterns=[f'{subfolder}/*'],
+                        local_files_only=True  # Use only local files, don't try to download
                     )
                     delight_model_path = os.path.join(model_path, 'hunyuan3d-delight-v2-0')
                     multiview_model_path = os.path.join(model_path, subfolder)

@@ -1,0 +1,11 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/xhyh/project/llm/Hunyuan3D-2",
+        "/home/xhyh/.virtualenvs/hunyuan/lib/python3.10/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/xhyh/project/llm/Hunyuan3D-2",
+        "/home/xhyh/.virtualenvs/hunyuan/lib/python3.10/site-packages"
+    ],
+    "python.linting.enabled": false
+}

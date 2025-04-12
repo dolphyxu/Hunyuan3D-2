@@ -647,8 +647,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mini')
     parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mini-turbo')
+    
+    # parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mv')
+    # parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mv')
     parser.add_argument("--texgen_model_path", type=str, default='tencent/Hunyuan3D-2')
-    parser.add_argument('--port', type=int, default=8080)
+    parser.add_argument('--port', type=int, default=8082)
     parser.add_argument('--host', type=str, default='0.0.0.0')
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--mc_algo', type=str, default='mc')
@@ -694,7 +697,7 @@ if __name__ == '__main__':
         try:
             from hy3dgen.texgen import Hunyuan3DPaintPipeline
 
-            texgen_worker = Hunyuan3DPaintPipeline.from_pretrained(args.texgen_model_path)
+            texgen_worker = Hunyuan3DPaintPipeline.from_pretrained(args.texgen_model_path, local_files_only=True)
             if args.low_vram_mode:
                 texgen_worker.enable_model_cpu_offload()
             # Not help much, ignore for now.
@@ -728,6 +731,7 @@ if __name__ == '__main__':
         subfolder=args.subfolder,
         use_safetensors=True,
         device=args.device,
+        local_files_only=True,  # Use only local files, don't try to download
     )
     if args.enable_flashvdm:
         mc_algo = 'mc' if args.device in ['cpu', 'mps'] else args.mc_algo

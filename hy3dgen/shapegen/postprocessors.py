@@ -17,7 +17,8 @@ import tempfile
 from typing import Union
 
 import numpy as np
-import pymeshlab
+# Import pymeshlab through our wrapper to handle E57 plugin errors
+from ..pymeshlab_wrapper import pymeshlab
 import torch
 import trimesh
 

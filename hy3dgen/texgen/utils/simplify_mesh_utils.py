@@ -23,7 +23,7 @@ def remesh_mesh(mesh_path, remesh_path, method='trimesh'):
 
 
 def mesh_simplify_trimesh(inputpath, outputpath):
-    import pymeshlab
+    from ..pymeshlab_wrapper import pymeshlab
     ms = pymeshlab.MeshSet()
     ms.load_new_mesh(inputpath, load_in_a_single_layer=True)
     ms.save_current_mesh(outputpath.replace('.glb', '.obj'), save_textures=False)

@@ -284,8 +284,14 @@ def generation_all(
     stats['time']['face reduction'] = time.time() - tmp_time
 
     tmp_time = time.time()
-    textured_mesh = texgen_worker(mesh, image)
-    logger.info("---Texture Generation takes %s seconds ---" % (time.time() - tmp_time))
+    # Use Hunyuan3DPaintPipeline for texture generation
+    if HAS_TEXTUREGEN:
+        textured_mesh = texgen_worker(mesh, image)
+        logger.info("---Texture Generation with Hunyuan3DPaintPipeline takes %s seconds ---" % (time.time() - tmp_time))
+    else:
+        # Fallback if texture generation is not available
+        textured_mesh = mesh.copy()
+        logger.info("---Texture Generation skipped (not available) ---")
     stats['time']['texture generation'] = time.time() - tmp_time
     stats['time']['total'] = time.time() - start_time_0
 
@@ -402,7 +408,7 @@ def build_app():
                         caption = gr.Textbox(label='Text Prompt',
                                              placeholder='HunyuanDiT will be used to generate image.',
                                              info='Example: A 3D model of a cute cat, white background')
-                    with gr.Tab('MultiView Prompt', visible=MV_MODE) as tab_mv:
+                    with gr.Tab('MultiView Prompt', id='tab_mv', visible=MV_MODE) as tab_mv:
                         # gr.Label('Please upload at least one front image.')
                         with gr.Row():
                             mv_image_front = gr.Image(label='Front', type='pil', image_mode='RGBA', height=140,
@@ -707,6 +713,7 @@ if __name__ == '__main__':
             #     texgen_worker.models['multiview_model'].pipeline.unet.compile()
             #     texgen_worker.models['multiview_model'].pipeline.vae.compile()
             HAS_TEXTUREGEN = True
+            print("Successfully loaded Hunyuan3DPaintPipeline for texture generation.")
         except Exception as e:
             print(e)
             print("Failed to load texture generator.")

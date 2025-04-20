@@ -372,9 +372,6 @@ def build_app():
     {title}
     </div>
     # <div align="center">
-    # Tencent Hunyuan3D Team
-    # </div>
-    # <div align="center">
     #   <a href="https://github.com/tencent/Hunyuan3D-2">Github</a> &ensp; 
     #   <a href="http://3d-models.hunyuan.tencent.com">Homepage</a> &ensp;
     #   <a href="https://3d.hunyuan.tencent.com">Hunyuan3D Studio</a> &ensp;
@@ -412,14 +409,14 @@ def build_app():
                     with gr.Tab('MultiView Prompt', id='tab_mv', visible=MV_MODE) as tab_mv:
                         # gr.Label('Please upload at least one front image.')
                         with gr.Row():
-                            mv_image_front = gr.Image(label='Front', type='pil', image_mode='RGBA', height=140,
+                            mv_image_front = gr.Image(label='前', type='pil', image_mode='RGBA', height=200,
                                                       min_width=100, elem_classes='mv-image')
-                            mv_image_back = gr.Image(label='Back', type='pil', image_mode='RGBA', height=140,
+                            mv_image_back = gr.Image(label='后', type='pil', image_mode='RGBA', height=200,
                                                      min_width=100, elem_classes='mv-image')
                         with gr.Row():
-                            mv_image_left = gr.Image(label='Left', type='pil', image_mode='RGBA', height=140,
+                            mv_image_left = gr.Image(label='左', type='pil', image_mode='RGBA', height=200,
                                                      min_width=100, elem_classes='mv-image')
-                            mv_image_right = gr.Image(label='Right', type='pil', image_mode='RGBA', height=140,
+                            mv_image_right = gr.Image(label='右', type='pil', image_mode='RGBA', height=200,
                                                       min_width=100, elem_classes='mv-image')
 
                 HAS_TEXTUREGEN = True
@@ -488,22 +485,22 @@ def build_app():
                     with gr.Tab('Mesh Statistic', id='stats_panel'):
                         stats = gr.Json({}, label='Mesh Stats')
 
-            with gr.Column(scale=3 if MV_MODE else 2):
-                with gr.Tabs(selected='tab_img_gallery') as gallery:
-                    with gr.Tab('Image to 3D Gallery', id='tab_img_gallery', visible=not MV_MODE) as tab_gi:
-                        with gr.Row():
-                            gr.Examples(examples=example_is, inputs=[image],
-                                        label=None, examples_per_page=18)
+            # with gr.Column(scale=3 if MV_MODE else 2):
+            #     with gr.Tabs(selected='tab_img_gallery') as gallery:
+            #         with gr.Tab('Image to 3D Gallery', id='tab_img_gallery', visible=not MV_MODE) as tab_gi:
+            #             with gr.Row():
+            #                 gr.Examples(examples=example_is, inputs=[image],
+            #                             label=None, examples_per_page=18)
 
-                    with gr.Tab('Text to 3D Gallery', id='tab_txt_gallery', visible=HAS_T2I and not MV_MODE) as tab_gt:
-                        with gr.Row():
-                            gr.Examples(examples=example_ts, inputs=[caption],
-                                        label=None, examples_per_page=18)
-                    with gr.Tab('MultiView to 3D Gallery', id='tab_mv_gallery', visible=MV_MODE) as tab_mv:
-                        with gr.Row():
-                            gr.Examples(examples=example_mvs,
-                                        inputs=[mv_image_front, mv_image_back, mv_image_left, mv_image_right],
-                                        label=None, examples_per_page=6)
+                    # with gr.Tab('Text to 3D Gallery', id='tab_txt_gallery', visible=HAS_T2I and not MV_MODE) as tab_gt:
+                    #     with gr.Row():
+                    #         gr.Examples(examples=example_ts, inputs=[caption],
+                    #                     label=None, examples_per_page=18)
+                    # with gr.Tab('MultiView to 3D Gallery', id='tab_mv_gallery', visible=MV_MODE) as tab_mv:
+                    #     with gr.Row():
+                    #         gr.Examples(examples=example_mvs,
+                    #                     inputs=[mv_image_front, mv_image_back, mv_image_left, mv_image_right],
+                    #                     label=None, examples_per_page=6)
 
         gr.HTML(f"""
         <div align="center">
@@ -526,9 +523,9 @@ def build_app():
             </div>
             """)
 
-        tab_ip.select(fn=lambda: gr.update(selected='tab_img_gallery'), outputs=gallery)
-        if HAS_T2I:
-            tab_tp.select(fn=lambda: gr.update(selected='tab_txt_gallery'), outputs=gallery)
+        # tab_ip.select(fn=lambda: gr.update(selected='tab_img_gallery'), outputs=gallery)
+        # if HAS_T2I:
+        #     tab_tp.select(fn=lambda: gr.update(selected='tab_txt_gallery'), outputs=gallery)
 
         btn.click(
             shape_generation,
@@ -685,10 +682,11 @@ if __name__ == '__main__':
     print(f"disable_tex: {args.disable_tex}")
     print("---------------End Arguments:")
 
-    HTML_HEIGHT = 690 if MV_MODE else 650
-    HTML_WIDTH = 500
+    # 修改为16:9的比例
+    HTML_HEIGHT = 700
+    HTML_WIDTH = 1267
     HTML_OUTPUT_PLACEHOLDER = f"""
-    <div style='height: {650}px; width: 100%; border-radius: 8px; border-color: #e5e7eb; border-style: solid; border-width: 1px; display: flex; justify-content: center; align-items: center;'>
+    <div style='height: {HTML_HEIGHT}px; width: 100%; border-radius: 8px; border-color: #e5e7eb; border-style: solid; border-width: 1px; display: flex; justify-content: center; align-items: center;'>
       <div style='text-align: center; font-size: 16px; color: #6b7280;'>
         <p style="color: #8d8d8d;">Welcome to Hunyuan3D!</p>
         <p style="color: #8d8d8d;">No mesh here.</p>
@@ -697,7 +695,7 @@ if __name__ == '__main__':
     """
 
     INPUT_MESH_HTML = """
-    <div style='height: 490px; width: 100%; border-radius: 8px; 
+    <div style='height: 500px; width: 100%; border-radius: 8px; 
     border-color: #e5e7eb; order-style: solid; border-width: 1px;'>
     </div>
     """

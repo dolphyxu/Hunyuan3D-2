@@ -2,6 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "image23d_mix",
+            "type": "python",
+            "env": {
+                "PYTHONPATH":"${workspaceRoot}"
+            },
+            "request": "launch",
+            "program": "/home/xhyh/project/llm/Hunyuan3D-2/gradio_app_mix.py",
+            "args": ["--enable_t23d"],
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "image23d_mv",
             "type": "python",
             "env": {

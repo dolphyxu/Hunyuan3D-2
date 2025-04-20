@@ -52,40 +52,69 @@ class Hunyuan3DTexGenConfig:
 
 class Hunyuan3DPaintPipeline:
     @classmethod
-    def from_pretrained(cls, model_path, subfolder='hunyuan3d-paint-v2-0-turbo'):
+    def from_pretrained(cls, model_path, subfolder='hunyuan3d-paint-v2-0'):
         original_model_path = model_path
-        if not os.path.exists(model_path):
-            # try local path
-            base_dir = os.environ.get('HY3DGEN_MODELS', '~/.cache/hy3dgen')
-            model_path = os.path.expanduser(os.path.join(base_dir, model_path))
-
+        
+        # 首先检查是否是直接路径
+        if os.path.exists(model_path):
             delight_model_path = os.path.join(model_path, 'hunyuan3d-delight-v2-0')
             multiview_model_path = os.path.join(model_path, subfolder)
-
-            if not os.path.exists(delight_model_path) or not os.path.exists(multiview_model_path):
-                try:
-                    import huggingface_hub
-                    # download from huggingface
-                    model_path = huggingface_hub.snapshot_download(
-                        repo_id=original_model_path, allow_patterns=["hunyuan3d-delight-v2-0/*"],
-                        local_files_only=True  # Use only local files, don't try to download
-                    )
-                    model_path = huggingface_hub.snapshot_download(
-                        repo_id=original_model_path, allow_patterns=[f'{subfolder}/*'],
-                        local_files_only=True  # Use only local files, don't try to download
-                    )
-                    delight_model_path = os.path.join(model_path, 'hunyuan3d-delight-v2-0')
-                    multiview_model_path = os.path.join(model_path, subfolder)
-                    return cls(Hunyuan3DTexGenConfig(delight_model_path, multiview_model_path, subfolder))
-                except ImportError:
-                    logger.warning(
-                        "You need to install HuggingFace Hub to load models from the hub."
-                    )
-                    raise RuntimeError(f"Model path {model_path} not found")
-            else:
+            
+            if os.path.exists(delight_model_path) and os.path.exists(multiview_model_path):
+                print(f"找到模型目录: {model_path}")
                 return cls(Hunyuan3DTexGenConfig(delight_model_path, multiview_model_path, subfolder))
-
-        raise FileNotFoundError(f"Model path {original_model_path} not found and we could not find it at huggingface")
+        
+        # 尝试从HuggingFace缓存目录加载
+        hf_cache_path = os.path.expanduser("~/.cache/huggingface/hub")
+        model_name = original_model_path.replace("/", "--")
+        if not model_name.startswith("models--"):
+            model_name = f"models--{model_name}"
+            
+        hf_model_path = os.path.join(hf_cache_path, model_name)
+        print(f"尝试从HuggingFace缓存加载: {hf_model_path}")
+        
+        if os.path.exists(hf_model_path):
+            # 查找最新的snapshot
+            snapshots_dir = os.path.join(hf_model_path, "snapshots")
+            if os.path.exists(snapshots_dir):
+                snapshot_dirs = [d for d in os.listdir(snapshots_dir) if os.path.isdir(os.path.join(snapshots_dir, d))]
+                if snapshot_dirs:
+                    # 按名称排序并使用最新的snapshot
+                    snapshot_dirs.sort()
+                    latest_snapshot = os.path.join(snapshots_dir, snapshot_dirs[-1])
+                    print(f"使用最新的snapshot: {latest_snapshot}")
+                    
+                    delight_model_path = os.path.join(latest_snapshot, 'hunyuan3d-delight-v2-0')
+                    multiview_model_path = os.path.join(latest_snapshot, subfolder)
+                    
+                    if os.path.exists(delight_model_path) and os.path.exists(multiview_model_path):
+                        print(f"找到模型子目录: {delight_model_path} 和 {multiview_model_path}")
+                        return cls(Hunyuan3DTexGenConfig(delight_model_path, multiview_model_path, subfolder))
+        
+        # 如果上述方法都失败，尝试使用huggingface_hub API
+        try:
+            import huggingface_hub
+            # 从huggingface下载
+            print(f"尝试使用huggingface_hub API下载模型: {original_model_path}")
+            model_path = huggingface_hub.snapshot_download(
+                repo_id=original_model_path, allow_patterns=["hunyuan3d-delight-v2-0/*"],
+                local_files_only=True  # 只使用本地文件，不尝试下载
+            )
+            model_path = huggingface_hub.snapshot_download(
+                repo_id=original_model_path, allow_patterns=[f'{subfolder}/*'],
+                local_files_only=True  # 只使用本地文件，不尝试下载
+            )
+            delight_model_path = os.path.join(model_path, 'hunyuan3d-delight-v2-0')
+            multiview_model_path = os.path.join(model_path, subfolder)
+            return cls(Hunyuan3DTexGenConfig(delight_model_path, multiview_model_path, subfolder))
+        except ImportError:
+            logger.warning(
+                "You need to install HuggingFace Hub to load models from the hub."
+            )
+            raise RuntimeError(f"Model path {original_model_path} not found")
+        except Exception as e:
+            logger.warning(f"Error loading model: {str(e)}")
+            raise RuntimeError(f"Failed to load model from {original_model_path}: {str(e)}")
 
     def __init__(self, config):
         self.config = config

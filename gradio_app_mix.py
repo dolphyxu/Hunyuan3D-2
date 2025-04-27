@@ -360,9 +360,11 @@ def shape_generation(
 def build_app():
     title = 'Hunyuan3D-2: High Resolution Textured 3D Assets Generation'
     if MV_MODE:
-        title = 'Hunyuan3D-2mv: Image to 3D Generation with 1-4 Views'
+        # title = 'Hunyuan3D-2mv: Image to 3D Generation with 1-4 Views'
+        title = 'Think High: Image to 3D Generation with 1-4 Views'
     if 'mini' in args.subfolder:
-        title = 'Hunyuan3D-2mini: Strong 0.6B Image to Shape Generator'
+        # title = 'Hunyuan3D-2mini: Strong 0.6B Image to Shape Generator'
+        title = 'Think High: Image to 3D Generation'
     if TURBO_MODE:
         title = title.replace(':', '-Turbo: Fast ')
 
@@ -371,13 +373,6 @@ def build_app():
 
     {title}
     </div>
-    # <div align="center">
-    #   <a href="https://github.com/tencent/Hunyuan3D-2">Github</a> &ensp; 
-    #   <a href="http://3d-models.hunyuan.tencent.com">Homepage</a> &ensp;
-    #   <a href="https://3d.hunyuan.tencent.com">Hunyuan3D Studio</a> &ensp;
-    #   <a href="#">Technical Report</a> &ensp;
-    #   <a href="https://huggingface.co/Tencent/Hunyuan3D-2"> Pretrained Models</a> &ensp;
-    # </div>
     """
     custom_css = """
     .app.svelte-wpkpf6.svelte-wpkpf6:not(.fill_width) {
@@ -650,11 +645,11 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser()
-    # parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mini')
-    # parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mini-turbo')
+    parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mini')
+    parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mini-turbo')
     
-    parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mv')
-    parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mv')
+    # parser.add_argument("--model_path", type=str, default='tencent/Hunyuan3D-2mv')
+    # parser.add_argument("--subfolder", type=str, default='hunyuan3d-dit-v2-mv')
     parser.add_argument("--texgen_model_path", type=str, default='tencent/Hunyuan3D-2')
     parser.add_argument('--port', type=int, default=8082)
     parser.add_argument('--host', type=str, default='0.0.0.0')
